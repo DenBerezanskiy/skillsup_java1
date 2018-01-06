@@ -1,5 +1,7 @@
 package ua.dp.skillsup.reflection;
 
+import ua.dp.skillsup.reflection.annotations.Doc;
+
 /**
  * Created by skillsup on 12.12.17.
  */
