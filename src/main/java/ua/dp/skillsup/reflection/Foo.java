@@ -9,7 +9,7 @@ import ua.dp.skillsup.reflection.annotations.Execute;
 
 public class Foo{
     @Execute
-    public void bar(@Env("JAVA_HOME") String javaHome){
+    public void bar(@Env("M2_HOME") String javaHome){
 
         System.out.println(javaHome);
     }

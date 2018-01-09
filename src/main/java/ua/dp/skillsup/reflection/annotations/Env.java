@@ -9,6 +9,8 @@ import java.lang.annotation.Target;
  * Created by Denis Berezanskiy on 15.12.17.
  */
 @Target(ElementType.PARAMETER)
+@Retention(RetentionPolicy.RUNTIME)
 public @interface Env {
     String value();
+
 }
