@@ -8,11 +8,10 @@ import ua.dp.skillsup.reflection.annotations.Execute;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
+
 import java.util.Map;
 import java.util.Set;
 
-import static com.google.common.base.StandardSystemProperty.JAVA_HOME;
 
 /**
  * Created by Denis Berezanskiy on 14.12.17.
@@ -37,8 +36,9 @@ public class Executor {
                     }
                     catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                     {
-                        e.printStackTrace();
+                        throw new RuntimeException(e);
                     }
+
                 }
             }
         }
@@ -61,14 +61,7 @@ public class Executor {
                     Env env = (Env) parameterAnnotation;
                     param = env.value();
                     Map<String, String> environment = System.getenv();
-
-                    for (String envName : environment.keySet())
-                    {
-                        if (envName.equals(param))
-                        {
-                            systemParameter = envName + "=" + environment.get(envName);
-                        }
-                    }
+                    systemParameter = environment.get(param);
                 }
             }
         }
