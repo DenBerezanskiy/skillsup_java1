@@ -60,8 +60,7 @@ public class Executor {
                 {
                     Env env = (Env) parameterAnnotation;
                     param = env.value();
-                    Map<String, String> environment = System.getenv();
-                    systemParameter = environment.get(param);
+                    systemParameter = System.getenv(param);
                 }
             }
         }
