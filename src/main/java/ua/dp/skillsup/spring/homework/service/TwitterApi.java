@@ -19,4 +19,10 @@ public class TwitterApi implements ServiceApi{
                 new Post("@realDonaldTrump you're wrong!", "")
         );
     }
+
+    public void setUsername(String username) {
+    }
+
+    public void setPassword(String password) {
+    }
 }

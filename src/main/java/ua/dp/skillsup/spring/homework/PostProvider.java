@@ -12,4 +12,19 @@ public class PostProvider {
     public List<Post> getPosts(){
         return postFilter.filterByKeyword(serviceApi.getPosts(), keyWord);
     }
+
+    public void setFacebookServiceApi(ua.dp.skillsup.spring.homework.service.FacebookApi facebookServiceApi) {
+    }
+
+    public void setPostFilter(PostFilter postFilter) {
+    }
+
+    public void setKeyWord(String keyWord) {
+    }
+
+    public void setInstagramServiceApi(ua.dp.skillsup.spring.homework.service.InstagramApi instagramServiceApi) {
+    }
+
+    public void setTwitterServiceApi(ua.dp.skillsup.spring.homework.service.FacebookApi twitterServiceApi) {
+    }
 }

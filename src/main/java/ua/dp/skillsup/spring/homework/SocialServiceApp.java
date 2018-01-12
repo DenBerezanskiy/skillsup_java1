@@ -24,4 +24,7 @@ public class SocialServiceApp {
             System.out.println(post);
         }
     }
+
+    public void setProviders(List providers) {
+    }
 }
