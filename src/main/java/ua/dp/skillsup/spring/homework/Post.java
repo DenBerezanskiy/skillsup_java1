@@ -32,4 +32,5 @@ public class Post {
                 ", imageUrl='" + imageUrl + '\'' +
                 '}';
     }
+
 }

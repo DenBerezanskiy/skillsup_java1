@@ -25,4 +25,12 @@ public class TwitterApi implements ServiceApi{
 
     public void setPassword(String password) {
     }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
 }

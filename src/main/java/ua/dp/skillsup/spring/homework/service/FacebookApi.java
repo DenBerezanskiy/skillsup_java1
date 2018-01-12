@@ -25,4 +25,12 @@ public class FacebookApi implements ServiceApi{
 
     public void setSecret(String secret) {
     }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
 }

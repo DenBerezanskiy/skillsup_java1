@@ -13,18 +13,28 @@ public class PostProvider {
         return postFilter.filterByKeyword(serviceApi.getPosts(), keyWord);
     }
 
-    public void setFacebookServiceApi(ua.dp.skillsup.spring.homework.service.FacebookApi facebookServiceApi) {
-    }
-
     public void setPostFilter(PostFilter postFilter) {
+        this.postFilter = postFilter;
     }
 
     public void setKeyWord(String keyWord) {
+        this.keyWord = keyWord;
+    }
+    public void setServiceApi(ServiceApi serviceApi) {
+        this.serviceApi = serviceApi;
     }
 
-    public void setInstagramServiceApi(ua.dp.skillsup.spring.homework.service.InstagramApi instagramServiceApi) {
+    public ServiceApi getServiceApi() {
+        return serviceApi;
     }
 
-    public void setTwitterServiceApi(ua.dp.skillsup.spring.homework.service.FacebookApi twitterServiceApi) {
+    public PostFilter getPostFilter() {
+        return postFilter;
     }
+
+    public String getKeyWord() {
+        return keyWord;
+    }
+
+
 }

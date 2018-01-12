@@ -5,7 +5,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
     
     <context:property-placeholder location="classpath:socialApplication.properties"/>
-    
+
     <bean id="facebookApi" class="ua.dp.skillsup.spring.homework.service.FacebookApi">
         <property name="apiKey" value="${apiKey}"/>
         <property name="secret" value="${secret}"/>
@@ -22,17 +22,17 @@
     </bean>
     
     <bean id="facebookPostProvider" class="ua.dp.skillsup.spring.homework.PostProvider">
-        <property name="facebookServiceApi" ref="facebookApi"/>
+        <property name="serviceApi" ref="facebookApi"/>
         <property name="postFilter" ref="postFilter"/>
         <property name="keyWord" value="${keyWord}"/>
     </bean>
     <bean id="instagramPostProvider" class="ua.dp.skillsup.spring.homework.PostProvider">
-        <property name="instagramServiceApi" ref="instagramApi"/>
+        <property name="serviceApi" ref="instagramApi"/>
         <property name="postFilter" ref="postFilter"/>
         <property name="keyWord" value="${keyWord}"/>
     </bean>
     <bean id="twitterPostProvider" class="ua.dp.skillsup.spring.homework.PostProvider">
-        <property name="twitterServiceApi" ref="facebookApi"/>
+        <property name="serviceApi" ref="twitterApi"/>
         <property name="postFilter" ref="postFilter"/>
         <property name="keyWord" value="${keyWord}"/>
     </bean>

@@ -25,4 +25,12 @@ public class InstagramApi implements ServiceApi{
 
     public void setAppSecret(String appSecret) {
     }
+
+    public String getAppName() {
+        return appName;
+    }
+
+    public String getAppSecret() {
+        return appSecret;
+    }
 }

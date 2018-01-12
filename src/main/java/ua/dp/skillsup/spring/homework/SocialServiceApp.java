@@ -11,7 +11,9 @@ public class SocialServiceApp {
     public static void main(String[] args) {
         //todo instantiate App with spring
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("socialApplicationContext.xml");
-        //new SocialServiceApp().run();
+
+        SocialServiceApp socialServiceApp = (SocialServiceApp) context.getBean("socialServiceApp");
+        socialServiceApp.run();
     }
 
     public void run(){
@@ -25,6 +27,12 @@ public class SocialServiceApp {
         }
     }
 
-    public void setProviders(List providers) {
+
+    public List<PostProvider> getProviders() {
+        return providers;
+    }
+
+    public void setProviders(List<PostProvider> providers) {
+        this.providers = providers;
     }
 }
