@@ -1,10 +1,12 @@
 package ua.dp.skillsup.spring.homework;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.stereotype.Component;
 import sun.misc.Contended;
 import ua.dp.skillsup.spring.homework.service.FacebookApi;
 import ua.dp.skillsup.spring.homework.service.InstagramApi;

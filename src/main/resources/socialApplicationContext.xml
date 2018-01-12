@@ -8,17 +8,5 @@
     <context:property-placeholder location="classpath:socialApplication.properties"/>
     <context:annotation-config></context:annotation-config>
 
-    <bean id="facebookApi" class="ua.dp.skillsup.spring.homework.service.FacebookApi">
-        <property name="apiKey" value="${facebook_apiKey}"/>
-        <property name="secret" value="${facebook_secret}"/>
-    </bean>
-    <bean id="instagramApi" class="ua.dp.skillsup.spring.homework.service.InstagramApi">
-        <property name="appName" value="${instagram_appName}"/>
-        <property name="appSecret" value="${instagram_appSecret}"/>
-    </bean>
-    <bean id="twitterApi" class="ua.dp.skillsup.spring.homework.service.TwitterApi">
-        <property name="username" value="${twitter_username}"/>
-        <property name="password" value="${twitter_password}"/>
-    </bean>
 
 </beans>

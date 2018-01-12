@@ -1,5 +1,6 @@
 package ua.dp.skillsup.spring.homework;
 
+import org.springframework.beans.factory.annotation.Value;
 import ua.dp.skillsup.spring.homework.service.ServiceApi;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 public class PostProvider {
     private ServiceApi serviceApi;
     private PostFilter postFilter;
+    @Value("${keyWord}")
     private String keyWord;
 
     public List<Post> getPosts(){
