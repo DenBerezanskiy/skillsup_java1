@@ -1,11 +1,15 @@
 package ua.dp.skillsup.spring.homework;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import sun.misc.Contended;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Configuration
 public class SocialServiceApp {
+    @Autowired
     List<PostProvider> providers;
 
     public static void main(String[] args) {

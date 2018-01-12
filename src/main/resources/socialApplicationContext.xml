@@ -3,8 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    
+
+    <context:component-scan base-package="ua.dp.skillsup.spring.homework"/>
     <context:property-placeholder location="classpath:socialApplication.properties"/>
+    <context:annotation-config></context:annotation-config>
 
     <bean id="facebookApi" class="ua.dp.skillsup.spring.homework.service.FacebookApi">
         <property name="apiKey" value="${apiKey}"/>
@@ -18,9 +20,6 @@
         <property name="username" value="${username}"/>
         <property name="password" value="${password}"/>
     </bean>
-    <bean id="postFilter" class="ua.dp.skillsup.spring.homework.PostFilter">
-    </bean>
-    
     <bean id="facebookPostProvider" class="ua.dp.skillsup.spring.homework.PostProvider">
         <property name="serviceApi" ref="facebookApi"/>
         <property name="postFilter" ref="postFilter"/>
@@ -36,13 +35,5 @@
         <property name="postFilter" ref="postFilter"/>
         <property name="keyWord" value="${keyWord}"/>
     </bean>
-    <bean id="socialServiceApp" class="ua.dp.skillsup.spring.homework.SocialServiceApp">
-        <property name="providers">
-            <list>
-                <ref bean="facebookPostProvider"/>
-                <ref bean="instagramPostProvider"/>
-                <ref bean="twitterPostProvider"/>
-            </list>
-        </property>
-    </bean>
+
 </beans>

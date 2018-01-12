@@ -41,6 +41,4 @@
         <property name="amount" value="100"/>
         <property name="accountService" ref="accountService"/>
     </bean>
-
-
 </beans>
