@@ -5,6 +5,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class FeeService implements InitializingBean{
 
+    private WeekendService weekendService;
     private HolidayService holidayService;
     private double fee;
 
@@ -19,8 +20,9 @@ public class FeeService implements InitializingBean{
     public FeeService() {
     }
 
-    public FeeService(HolidayService holidayService) {
+    public FeeService(HolidayService holidayService , WeekendService weekendService) {
         this.holidayService = holidayService;
+        this.weekendService = weekendService;
     }
 
     public double getFee(double paymentAmount) {
