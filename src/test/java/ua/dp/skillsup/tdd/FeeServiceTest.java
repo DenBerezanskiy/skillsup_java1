@@ -51,4 +51,14 @@ public void transferOnWorkingDays()
     Assert.assertEquals(0,sender.getAmount(),0.1);
     Assert.assertEquals(98.5,recipient.getAmount(),0.1);
 }
+@Test
+    public void transferDuringHolidaysOnWorkingDays()
+{
+    Mockito.when(weekendService.isWeekend()).thenReturn(false);
+    Mockito.when(holidayService.isHoliday(new Date())).thenReturn(true);
+
+    accountService.transferMoney(sender,recipient,100);
+    Assert.assertEquals(0,sender.getAmount(),0.1);
+    Assert.assertEquals(98.5,recipient.getAmount(),0.1);
+}
 }
