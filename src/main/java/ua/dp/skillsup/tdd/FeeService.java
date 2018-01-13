@@ -38,6 +38,10 @@ public class FeeService implements InitializingBean{
         {
             return fee*1.5;
         }
+        if(!weekendService.isWeekend() &&holidayService.isHoliday(new Date()))
+        {
+            return fee*1.5;
+        }
         return fee;
     }
 
