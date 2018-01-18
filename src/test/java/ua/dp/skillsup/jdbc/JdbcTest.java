@@ -48,6 +48,7 @@ public class JdbcTest {
                 "    TITLE VARCHAR(60) NOT NULL,\n" +
                 "    CONTENT VARCHAR(500) NOT NULL,\n" +
                 ");");
+        executeStatement("ALTER TABLE POST ADD (timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)");
 
         executeStatement("INSERT INTO POST(USER_ID, TITLE, CONTENT) VALUES\n" +
                 "(2,'I like burritos','burritos are awesome'), " +
