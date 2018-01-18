@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class JdbcTest {
@@ -16,7 +17,7 @@ public class JdbcTest {
     @Before
     public void setUp() throws Exception {
         Class.forName("org.h2.Driver");
-        conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+        conn = DriverManager.getConnection("jdbc:h2:mem:", "sa", "");
     }
 
     @After
@@ -26,25 +27,55 @@ public class JdbcTest {
 
     @Test
     public void testUser() throws Exception {
-        Statement statement = conn.createStatement();
-        statement.execute("DROP TABLE IF EXISTS USER;" +
-                "CREATE TABLE USER\n" +
+        executeStatement("CREATE TABLE USER\n" +
                 "(\n" +
                 "    ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n" +
                 "    USERNAME VARCHAR(64) NOT NULL UNIQUE,\n" +
                 "    PASSWORD VARCHAR(60) NOT NULL,\n" +
                 "    EMAIL VARCHAR(64) NOT NULL,\n" +
                 ");");
-        statement.close();
 
-        statement = conn.createStatement();
-        statement.execute("INSERT INTO user(USERNAME, PASSWORD, EMAIL) VALUES\n" +
-                "  ('admin','$2a$08$DobXCJtm7dQwfNz3J0ZILevNNXVslyrY2j0J2dKOBG56uPpBooVoy',\n" +
-                "   'helen.moore@gmail.com');");
+        executeStatement("INSERT INTO user(USERNAME, PASSWORD, EMAIL) VALUES\n" +
+                "('admin','1234','helen.moore@gmail.com'), " +
+                "('vasya','123','vasya@gmail.com');");
+
+        printQuery("select * from user");
+
+        executeStatement("CREATE TABLE POST\n" +
+                "(\n" +
+                "    ID BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,\n" +
+                "    USER_ID BIGINT NOT NULL,\n" +
+                "    TITLE VARCHAR(60) NOT NULL,\n" +
+                "    CONTENT VARCHAR(500) NOT NULL,\n" +
+                ");");
+
+        executeStatement("INSERT INTO POST(USER_ID, TITLE, CONTENT) VALUES\n" +
+                "(2,'I like burritos','burritos are awesome'), " +
+                "(2,'I like taсos too','they are awesome as well');");
+
+        System.out.println();
+        printQuery("select * from post");
+
+    }
+
+    private void executeStatement(String createUser) throws SQLException {
+        Statement statement = conn.createStatement();
+        statement.execute(createUser);
         statement.close();
-        ResultSet resultSet = conn.prepareStatement("select * from user").executeQuery();
+    }
+
+    private void printQuery(String sql) throws SQLException {
+        ResultSet resultSet = conn.prepareStatement(sql).executeQuery();
+        int columnCount = resultSet.getMetaData().getColumnCount();
+        for (int i = 0; i < columnCount; i++) {
+            System.out.print(resultSet.getMetaData().getColumnName(i + 1) + "|");
+        }
+        System.out.println();
         while (resultSet.next()) {
-            System.out.println(resultSet.getObject(2));
+            for (int i = 0; i < columnCount; i++) {
+                System.out.print(resultSet.getObject(i + 1) + "|");
+            }
+            System.out.println();
         }
     }
 }
