@@ -48,7 +48,14 @@ public class JdbcTest {
                 "    TITLE VARCHAR(60) NOT NULL,\n" +
                 "    CONTENT VARCHAR(500) NOT NULL,\n" +
                 ");");
-        executeStatement("ALTER TABLE POST ADD (timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)");
+        executeStatement("ALTER TABLE POST ADD (`TIMESTAMP` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)");
+
+        executeStatement("CREATE TABLE IF NOT EXISTS `LIKE` (\n" +
+                "    `ID` BIGINT  PRIMARY KEY AUTO_INCREMENT,\n" +
+                "     `POST_ID` BIGINT NOT NULL, FOREIGN KEY (POST_ID) REFERENCES POST(ID),\n" +
+                "     `USER_ID` BIGINT  NOT NULL, FOREIGN KEY (USER_ID) REFERENCES USER(ID),\n" +
+                "     `TIMESTAMP` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+
 
         executeStatement("INSERT INTO POST(USER_ID, TITLE, CONTENT) VALUES\n" +
                 "(2,'I like burritos','burritos are awesome'), " +
@@ -56,6 +63,7 @@ public class JdbcTest {
 
         System.out.println();
         printQuery("select * from post");
+
 
     }
 
