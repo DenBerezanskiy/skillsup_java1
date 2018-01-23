@@ -1,14 +1,22 @@
 package ua.dp.skillsup.jdbc;
 
+
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Random;
+import org.apache.commons.lang.StringUtils;
+
 
 public class JdbcTest {
 
@@ -39,7 +47,7 @@ public class JdbcTest {
                 "('admin','1234','helen.moore@gmail.com'), " +
                 "('vasya','123','vasya@gmail.com');");
 
-        printQuery("select * from user");
+        ;
 
         executeStatement("CREATE TABLE POST\n" +
                 "(\n" +
@@ -50,19 +58,53 @@ public class JdbcTest {
                 ");");
         executeStatement("ALTER TABLE POST ADD (`TIMESTAMP` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP)");
 
-        executeStatement("CREATE TABLE IF NOT EXISTS `LIKE` (\n" +
-                "    `ID` BIGINT  PRIMARY KEY AUTO_INCREMENT,\n" +
-                "     `POST_ID` BIGINT NOT NULL, FOREIGN KEY (POST_ID) REFERENCES POST(ID),\n" +
-                "     `USER_ID` BIGINT  NOT NULL, FOREIGN KEY (USER_ID) REFERENCES USER(ID),\n" +
-                "     `TIMESTAMP` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+
 
 
         executeStatement("INSERT INTO POST(USER_ID, TITLE, CONTENT) VALUES\n" +
                 "(2,'I like burritos','burritos are awesome'), " +
                 "(2,'I like taсos too','they are awesome as well');");
 
+        executeStatement("CREATE TABLE IF NOT EXISTS `LIKE` (\n" +
+                "    `ID` BIGINT  PRIMARY KEY AUTO_INCREMENT,\n" +
+                "     `POST_ID` BIGINT NOT NULL, FOREIGN KEY (POST_ID) REFERENCES POST(ID),\n" +
+                "     `USER_ID` BIGINT  NOT NULL, FOREIGN KEY (USER_ID) REFERENCES USER(ID),\n" +
+                "     `TIMESTAMP` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+
+        PreparedStatement preparedStatement =conn.prepareStatement("INSERT INTO USER(USERNAME,PASSWORD,EMAIL) VALUES (?,?,?)");
+
+        for(int i=0;i<5;i++)
+        {
+            preparedStatement.setString(1,"user"+i);
+            preparedStatement.setString(2,"password"+i);
+            preparedStatement.setString(3,"user"+i+"@gmail.com");
+            preparedStatement.addBatch();
+        }
+        preparedStatement.executeBatch();
+
+        preparedStatement = conn.prepareStatement("INSERT INTO POST(USER_ID,TITLE,CONTENT) VALUES (?,?,?)");
+
+        for(int i=0;i<10;i++)
+        {
+            Random random = new Random();
+            int userId = Math.abs(random.nextInt()%8);
+
+            preparedStatement.setInt(1,userId);
+            preparedStatement.setString(2,"Another one Title № "+i+1);
+            preparedStatement.setString(3, StringUtils.repeat("bla",i));
+            preparedStatement.addBatch();
+        }
+        preparedStatement.executeBatch();
+        preparedStatement =conn.prepareStatement("INSERT INTO `LIKE`(POST_ID,USER_ID,`TIMESTAMP`) VALUES (?,?,?)");
+
+
+
+        printQuery("select * from user");
         System.out.println();
         printQuery("select * from post");
+        System.out.println();
+
+
 
 
     }
@@ -86,5 +128,21 @@ public class JdbcTest {
             }
             System.out.println();
         }
+    }
+    private long getRandomTime() throws ParseException {
+        DateFormat formatter = new SimpleDateFormat("dd-MMM-yy HH:mm:ss");
+        Calendar cal=Calendar.getInstance();
+        String str_date1="17-June-07 02:10:15";
+        String str_date2="27-June-07 02:10:20";
+
+        cal.setTime(formatter.parse(str_date1));
+        Long value1 = cal.getTimeInMillis();
+
+        cal.setTime(formatter.parse(str_date2));
+        Long value2 = cal.getTimeInMillis();
+        long value3 = (long)(value1 + Math.random()*(value2 - value1));
+        cal.setTimeInMillis(value3);
+
+        return cal.getTimeInMillis();
     }
 }
