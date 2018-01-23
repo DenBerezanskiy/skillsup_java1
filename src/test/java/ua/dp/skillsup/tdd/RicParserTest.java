@@ -63,9 +63,9 @@ public class RicParserTest {
         s.toString();
     }
 
-    @Test
-    public void testWithMatchers() {
-        Object actual = "aa";
-        assertThat(actual, allOf(describedAs("Is string", is(String.class)), notNullValue()));
-    }
+//    @Test
+//    public void testWithMatchers() {
+//        Object actual = "aa";
+//        assertThat(actual, allOf(describedAs("Is string", is(String.class)), notNullValue()));
+//    }
 }
