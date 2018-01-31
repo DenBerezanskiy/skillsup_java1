@@ -81,7 +81,7 @@ public class JdbcTest
         }
         preparedStatement.executeBatch();
 
-        preparedStatement = conn.prepareStatement("INSERT INTO POST(USER_ID,TITLE,CONTENT) VALUES (?,?,?)");
+        preparedStatement = conn.prepareStatement("INSERT INTO POST(USER_ID,TITLE,CONTENT,`TIMESTAMP`) VALUES (?,?,?,?)");
 
         for(int i=0;i<10;i++)
         {
@@ -96,6 +96,7 @@ public class JdbcTest
             preparedStatement.setInt(1,userId);
             preparedStatement.setString(2,"Another one Title № "+i+1);
             preparedStatement.setString(3, StringUtils.repeat("bla",i));
+            preparedStatement.setTimestamp(4,new Timestamp(getRandomTime()));
             preparedStatement.addBatch();
         }
         preparedStatement.executeBatch();
@@ -130,17 +131,44 @@ public class JdbcTest
         preparedStatement.executeBatch();
         preparedStatement.close();
 
-        System.out.println("list of all post with columns (title, username) : ");
+        System.out.println("\n list of all post with columns (title, username) : ");
         String query ="SELECT POST.TITLE , USER.USERNAME FROM USER INNER JOIN POST  ON(USER.ID = POST.USER_ID);";
             printQuery(query);
 
-        System.out.println("post list (title, total_likes_received) with the most popular post at the top : ");
+        System.out.println("\n post list (title, total_likes_received) with the most popular post at the top : ");
 
         query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
                 " INNER JOIN `LIKE`  ON(POST.ID = `LIKE`.POST_ID)" +
                 " GROUP BY POST.ID " +
                 "ORDER BY MAX_LIKES_COUNT DESC;";
         printQuery(query);
+
+        printQuery("SELECT * FROM POST");
+        System.out.println("\n post list (title, total_likes_received) with the most popular" +
+                " post at the top, display only posts written during some time interval : \n");
+
+        preparedStatement = conn.prepareStatement("SELECT POST.TITLE , COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
+                " INNER JOIN `LIKE`  ON(POST.ID = `LIKE`.POST_ID) " +
+                "WHERE (POST.`TIMESTAMP` > ?) AND (POST.`TIMESTAMP` < ? )" +
+                "GROUP BY POST.ID " +
+                "ORDER BY MAX_LIKES_COUNT DESC ;");
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2017,7,17);
+
+        preparedStatement.setTimestamp(1,new Timestamp(calendar.getTimeInMillis()));
+        calendar.set(2017,7,27);
+        preparedStatement.setTimestamp(2,new Timestamp(calendar.getTimeInMillis()));
+       ResultSet rs =  preparedStatement.executeQuery();
+
+        ResultSetMetaData rsmd = rs.getMetaData();
+
+        while (rs.next()) {
+            for (int i=1; i<=rsmd.getColumnCount(); i++) {
+                System.out.print(rs.getObject(i) + "|");
+            }
+            System.out.println();
+        }
     }
 
     private void executeStatement(String createUser) throws SQLException
@@ -172,8 +200,8 @@ public class JdbcTest
     {
         DateFormat formatter = new SimpleDateFormat("dd-MMM-yy HH:mm:ss", Locale.ENGLISH);
         Calendar cal=Calendar.getInstance();
-        String str_date1="17-June-17 02:10:15";
-        String str_date2="27-June-17 02:10:20";
+        String str_date1="17-August-17 02:10:15";
+        String str_date2="27-August-17 02:10:20";
 
         cal.setTime(formatter.parse(str_date1));
         Long value1 = cal.getTimeInMillis();
