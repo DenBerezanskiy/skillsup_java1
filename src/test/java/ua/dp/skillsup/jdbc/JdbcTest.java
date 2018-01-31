@@ -87,7 +87,7 @@ public class JdbcTest
         {
             Random random = new Random();
 
-            int userId = Math.abs(random.nextInt()%getMaxId("select max(ID) from user"));
+            int userId = Math.abs(random.nextInt()%getMaxId("SELECT MAX(`ID`) FROM USER"));
             if(userId ==0)
             {
                 userId++;
@@ -101,8 +101,8 @@ public class JdbcTest
         preparedStatement.executeBatch();
 
         preparedStatement =conn.prepareStatement("INSERT INTO `LIKE`(POST_ID,USER_ID,`TIMESTAMP`) VALUES (?,?,?)");
-        String maxUserIdSqlQuery = "select max(`ID`) from user;";
-        String maxPostIdSqlQuery = "select max(`ID`) from post;";
+        String maxUserIdSqlQuery = "SELECT MAX(`ID`) FROM USER;";
+        String maxPostIdSqlQuery = "SELECT MAX(`ID`) FROM POST;";
 
         int maxUserId = getMaxId(maxUserIdSqlQuery);
         int maxPostId = getMaxId(maxPostIdSqlQuery);
@@ -128,13 +128,12 @@ public class JdbcTest
             preparedStatement.addBatch();
         }
         preparedStatement.executeBatch();
+        preparedStatement.close();
 
-        printQuery("select * from user");
-        System.out.println();
-        printQuery("select * from post");
-        System.out.println();
-        printQuery("select * from `like`");
-        System.out.println();
+        System.out.println("list of all post with columns (title, username) : ");
+        String query ="SELECT POST.TITLE , USER.USERNAME FROM USER INNER JOIN POST  ON(USER.ID = POST.USER_ID);";
+            printQuery(query);
+
     }
 
     private void executeStatement(String createUser) throws SQLException
