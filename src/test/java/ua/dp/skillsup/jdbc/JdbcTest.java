@@ -134,6 +134,13 @@ public class JdbcTest
         String query ="SELECT POST.TITLE , USER.USERNAME FROM USER INNER JOIN POST  ON(USER.ID = POST.USER_ID);";
             printQuery(query);
 
+        System.out.println("post list (title, total_likes_received) with the most popular post at the top : ");
+
+        query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
+                " INNER JOIN `LIKE`  ON(POST.ID = `LIKE`.POST_ID)" +
+                " GROUP BY POST.ID " +
+                "ORDER BY MAX_LIKES_COUNT DESC;";
+        printQuery(query);
     }
 
     private void executeStatement(String createUser) throws SQLException
