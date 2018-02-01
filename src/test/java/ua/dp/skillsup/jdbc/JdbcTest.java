@@ -108,7 +108,7 @@ public class JdbcTest
         int maxUserId = getMaxId(maxUserIdSqlQuery);
         int maxPostId = getMaxId(maxPostIdSqlQuery);
 
-        for(int i =0;i<20;i++)
+        for(int i =0;i<30;i++)
         {
             Random random = new Random();
             int userId = Math.abs(random.nextInt()%maxUserId);
@@ -131,10 +131,18 @@ public class JdbcTest
         preparedStatement.executeBatch();
         preparedStatement.close();
 
+        /*************************************************************************************************************
+         * Initialisation ends.
+         *
+         * Test queries below.
+         *
+         * ***********************************************************************************************************/
         System.out.println("\n list of all post with columns (title, username) : ");
         String query ="SELECT POST.TITLE , USER.USERNAME FROM USER INNER JOIN POST  ON(USER.ID = POST.USER_ID);";
             printQuery(query);
-
+        /*
+        2nd test
+         */
         System.out.println("\n post list (title, total_likes_received) with the most popular post at the top : ");
 
         query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
@@ -142,8 +150,9 @@ public class JdbcTest
                 " GROUP BY POST.ID " +
                 "ORDER BY MAX_LIKES_COUNT DESC;";
         printQuery(query);
-
-        printQuery("SELECT * FROM POST");
+        /*
+        3d test
+         */
         System.out.println("\n post list (title, total_likes_received) with the most popular" +
                 " post at the top, display only posts written during some time interval : \n");
 
@@ -169,6 +178,19 @@ public class JdbcTest
             }
             System.out.println();
         }
+
+        /*
+        4th test
+         */
+        System.out.println("\npost list (title, total_likes_received) with the most popular post " +
+                "at the top, display only posts that have more than 5 likes : \n");
+
+        query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) as TOTAL_LIKES_COUNT " +
+                "FROM POST INNER JOIN `LIKE` ON (POST.ID = `LIKE`.POST_ID) " +
+                "GROUP BY POST.ID HAVING COUNT(`LIKE`.ID)>5";
+        printQuery(query);
+
+
     }
 
     private void executeStatement(String createUser) throws SQLException
