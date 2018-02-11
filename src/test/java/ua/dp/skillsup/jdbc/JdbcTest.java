@@ -82,12 +82,12 @@ public class JdbcTest
         preparedStatement.executeBatch();
 
         preparedStatement = conn.prepareStatement("INSERT INTO POST(USER_ID,TITLE,CONTENT,`TIMESTAMP`) VALUES (?,?,?,?)");
-
+        int maxId = getMaxId("SELECT MAX(`ID`) FROM USER");
         for(int i=0;i<10;i++)
         {
             Random random = new Random();
 
-            int userId = Math.abs(random.nextInt()%getMaxId("SELECT MAX(`ID`) FROM USER"));
+            int userId = Math.abs(random.nextInt()%maxId);
             if(userId ==0)
             {
                 userId++;
@@ -137,79 +137,84 @@ public class JdbcTest
          * Test queries below.
          *
          * ***********************************************************************************************************/
+
+        testShowTitleAndUsername();
+
+        testListOfTopPosts();
+
+        testTopPostsDuringTimeInterval();
+
+        testPostWithFiveLikesMore();
+
+        testMostPopularUserTotalLikes();
+
+        testMostActiveUser();
+
+        testMostPopularUserAvgLikes();
+
+    }
+
+    private void testShowTitleAndUsername() throws SQLException
+    {
         System.out.println("\n list of all post with columns (title, username) : ");
         String query ="SELECT POST.TITLE , USER.USERNAME FROM USER INNER JOIN POST  ON USER.ID = POST.USER_ID;";
-            printQuery(query);
-        /*
-        2nd test
-         */
+        printQuery(query);
+    }
+    private void testListOfTopPosts() throws SQLException
+    {
         System.out.println("\n post list (title, total_likes_received) with the most popular post at the top : ");
 
-        query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
+        String query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
                 " INNER JOIN `LIKE`  ON POST.ID = `LIKE`.POST_ID" +
                 " GROUP BY POST.ID " +
                 "ORDER BY MAX_LIKES_COUNT DESC;";
         printQuery(query);
-        /*
-        3d test
-         */
+    }
+    private void testTopPostsDuringTimeInterval() throws SQLException
+    {
         System.out.println("\n post list (title, total_likes_received) with the most popular" +
                 " post at the top, display only posts written during some time interval : \n");
-
-        preparedStatement = conn.prepareStatement("SELECT POST.TITLE , COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
-                " INNER JOIN `LIKE`  ON POST.ID = `LIKE`.POST_ID " +
-                "WHERE (POST.`TIMESTAMP` > ?) AND (POST.`TIMESTAMP` < ? )" +
-                "GROUP BY POST.ID " +
-                "ORDER BY MAX_LIKES_COUNT DESC ;");
-
         Calendar calendar = Calendar.getInstance();
         calendar.set(2017,7,17);
-
-        preparedStatement.setTimestamp(1,new Timestamp(calendar.getTimeInMillis()));
+        Timestamp startDate = new Timestamp(calendar.getTimeInMillis());
         calendar.set(2017,7,27);
-        preparedStatement.setTimestamp(2,new Timestamp(calendar.getTimeInMillis()));
-       ResultSet rs =  preparedStatement.executeQuery();
+        Timestamp endDate = new Timestamp(calendar.getTimeInMillis());
+        String query = "SELECT POST.TITLE , COUNT(`LIKE`.ID) AS MAX_LIKES_COUNT FROM POST " +
+                " INNER JOIN `LIKE`  ON POST.ID = `LIKE`.POST_ID " +
+                "WHERE POST.`TIMESTAMP` BETWEEN \'" + startDate +"\' AND \'" + endDate + "\' " +
+                "GROUP BY POST.ID " +
+                "ORDER BY MAX_LIKES_COUNT DESC ;";
 
-        ResultSetMetaData rsmd = rs.getMetaData();
-
-        while (rs.next()) {
-            for (int i=1; i<=rsmd.getColumnCount(); i++) {
-                System.out.print(rs.getObject(i) + "|");
-            }
-            System.out.println();
-        }
-
-        /*
-        4th test
-         */
+        printQuery(query);
+    }
+    private void testPostWithFiveLikesMore() throws SQLException
+    {
         System.out.println("\n post list (title, total_likes_received) with the most popular post " +
                 "at the top, display only posts that have more than 5 likes : \n");
 
-        query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) AS TOTAL_LIKES_COUNT " +
+        String query = "SELECT POST.TITLE, COUNT(`LIKE`.ID) AS TOTAL_LIKES_COUNT " +
                 "FROM POST INNER JOIN `LIKE` ON POST.ID = `LIKE`.POST_ID " +
                 "GROUP BY POST.ID HAVING COUNT(`LIKE`.ID)>5";
         printQuery(query);
-
-        /*
-        5th test
-         */
+    }
+    private void testMostPopularUserTotalLikes() throws SQLException
+    {
         System.out.println("\n user list (username, total_likes_received) with the most popular user at the top : \n");
-
-        //TO HARD FOR ME FOR THIS TIME
-
-        /*
-        6th test
-         */
-
+    }
+    private void testMostActiveUser() throws SQLException
+    {
         System.out.println("\n user list (username, total_likes_given) with the most active user at the top : \n");
 
-        query = "SELECT USER.USERNAME , COUNT(`LIKE`.ID) AS TOTAL_LIKES_COUNT " +
+        String query = "SELECT USER.USERNAME , COUNT(`LIKE`.ID) AS TOTAL_LIKES_COUNT " +
                 "FROM USER INNER JOIN `LIKE` ON USER.ID = `LIKE`.USER_ID " +
                 "GROUP BY USER.ID " +
                 "ORDER BY TOTAL_LIKES_COUNT DESC;";
         printQuery(query);
     }
-
+    private void testMostPopularUserAvgLikes() throws SQLException
+    {
+        System.out.println("\n user list (username, average_likes_per_post) with the most popular user at the top :\n");
+    }
     private void executeStatement(String createUser) throws SQLException
     {
         Statement statement = conn.createStatement();
@@ -252,10 +257,10 @@ public class JdbcTest
 
         return cal.getTimeInMillis();
     }
-    private int getMaxId(String sql)
+    private int getMaxId(String sql) throws SQLException
     {
         int identifier = 0;
-        try {
+
             Statement id = conn.createStatement();
 
             id.executeQuery(sql);
@@ -265,9 +270,6 @@ public class JdbcTest
             {
                 identifier = rs.getInt(1);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         return identifier;
     }
 }
