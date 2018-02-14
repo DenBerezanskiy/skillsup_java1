@@ -200,6 +200,11 @@ public class JdbcTest
     private void testMostPopularUserTotalLikes() throws SQLException
     {
         System.out.println("\n user list (username, total_likes_received) with the most popular user at the top : \n");
+        String query = "SELECT USER.USERNAME , COUNT(`LIKE`.ID) AS TOTAL_LIKES_RECEIVED " +
+                "FROM POST INNER JOIN USER ON POST.USER_ID = USER.ID " +
+                "INNER JOIN `LIKE` ON POST.ID = `LIKE`.POST_ID GROUP BY USER.ID " +
+                "ORDER BY TOTAL_LIKES_RECEIVED DESC;";
+        printQuery(query);
     }
     private void testMostActiveUser() throws SQLException
     {
@@ -214,6 +219,12 @@ public class JdbcTest
     private void testMostPopularUserAvgLikes() throws SQLException
     {
         System.out.println("\n user list (username, average_likes_per_post) with the most popular user at the top :\n");
+
+        String query = "SELECT USER.USERNAME , AVG(`LIKE`.ID) AS AVERAGE_LIKES_PER_POST FROM POST " +
+                "INNER JOIN USER ON POST.USER_ID = USER.ID " +
+                "INNER JOIN `LIKE` ON POST.ID = `LIKE`.POST_ID GROUP BY USER.ID " +
+                "ORDER BY AVERAGE_LIKES_PER_POST DESC;";
+        printQuery(query);
     }
     private void executeStatement(String createUser) throws SQLException
     {
