@@ -220,10 +220,17 @@ public class JdbcTest
     {
         System.out.println("\n user list (username, average_likes_per_post) with the most popular user at the top :\n");
 
-        String query = "SELECT USER.USERNAME , AVG(`LIKE`.ID) AS AVERAGE_LIKES_PER_POST FROM POST " +
-                "INNER JOIN USER ON POST.USER_ID = USER.ID " +
-                "INNER JOIN `LIKE` ON POST.ID = `LIKE`.POST_ID GROUP BY USER.ID " +
-                "ORDER BY AVERAGE_LIKES_PER_POST DESC;";
+        String subquery = "SELECT POST.TITLE, POST.USER_ID AS USER_ID, " +
+                "POST.ID AS POST_ID, COUNT(`LIKE`.ID) AS TOTAL_LIKES_COUNT " +
+                "FROM POST INNER JOIN `LIKE` ON POST.ID = `LIKE`.POST_ID " +
+                "GROUP BY POST.ID " +
+                "ORDER BY TOTAL_LIKES_COUNT DESC";
+
+        String query = "SELECT USER.USERNAME, AVG(POST_LIKES_COUNT.TOTAL_LIKES_COUNT) AS AVG_LIKES_COUNT " +
+                "FROM USER INNER JOIN ("+subquery+") POST_LIKES_COUNT " +
+                "ON USER.ID = POST_LIKES_COUNT.USER_ID " +
+                "GROUP BY USER.ID " +
+                "ORDER BY AVG_LIKES_COUNT DESC;";
         printQuery(query);
     }
     private void executeStatement(String createUser) throws SQLException
